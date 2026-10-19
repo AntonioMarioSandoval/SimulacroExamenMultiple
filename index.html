@@ -14,7 +14,12 @@
             </button>
             <h1>UNLaM | Simulación de Evaluación</h1>
         </div>
-        <div id="timer-display" style="display: none;">00:00</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="header-restart-btn" class="btn-secondary" onclick="restartExam()" style="display: none; padding: 4px 10px; font-size: 0.9rem; border-radius: var(--radius-md);">
+                Reiniciar
+            </button>
+            <div id="timer-display" style="display: none;">00:00</div>
+        </div>
     </header>
 
     <!-- PANTALLA DE INICIO -->
@@ -23,20 +28,16 @@
             <div class="home-header">
                 <h2>Simulador de Examen</h2>
                 
-                <!-- SELECTORES GLOBALES DE MATERIA Y PARCIAL -->
+                <!-- SELECTORES GLOBALES DINÁMICOS -->
                 <div style="margin-top: 15px; margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                         <label style="color: var(--text-color); font-weight: bold; width: 80px; text-align: right;">Materia:</label>
-                        <select id="global-subject" onchange="updateActiveSubject()" style="width: auto; flex: 1; max-width: 250px; padding: 5px 10px;">
-                            <option value="Seguridad y Calidad" selected>Seguridad y calidad de aplicaciones web</option>
-                            <option value="Taller Web 2">Taller Web 2</option>
+                        <select id="global-subject" onchange="updatePartialDropdown()" style="width: auto; flex: 1; max-width: 250px; padding: 5px 10px;">
                         </select>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                         <label style="color: var(--text-color); font-weight: bold; width: 80px; text-align: right;">Instancia:</label>
                         <select id="global-partial" onchange="updateActiveSubject()" style="width: auto; flex: 1; max-width: 250px; padding: 5px 10px;">
-                            <option value="Parcial 1" selected>Primer Parcial</option>
-                            <option value="Parcial 2">Segundo Parcial - No disponible</option>
                         </select>
                     </div>
                 </div>
@@ -59,7 +60,6 @@
                     </div>
                 </button>
 
-                <!-- NUEVO BOTÓN: GENERAR PDF / IMPRIMIR -->
                 <button class="btn-large" onclick="navTo('print-setup-screen')" style="flex: 1; min-width: 250px; background-color: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.5);">
                     <span class="btn-icon">🖨️</span>
                     <div class="btn-text">
@@ -76,13 +76,13 @@
                     </div>
                 </button>
 
-                <button class="btn-large" onclick="navTo('admin-screen')" style="flex: 100%; background-color: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.5);">
+                <!--<button class="btn-large" onclick="navTo('admin-screen')" style="flex: 100%; background-color: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.5);">
                     <span class="btn-icon">📝</span>
                     <div class="btn-text">
                         <strong>Administrar Preguntas</strong>
                         <span>Crea, edita o exporta preguntas</span>
                     </div>
-                </button>
+                </button>-->
             </div>
         </div>
     </div>
@@ -110,9 +110,17 @@
         </div>
 
         <div class="form-group">
+            <label>Orden de las Opciones (Respuestas):</label>
+            <select id="cfg-options-order">
+                <option value="original">Como se registraron</option>
+                <option value="aleatorio">En Aleatorio</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label>Modalidad de Resultados:</label>
             <select id="cfg-feedback">
-                <option value="final">Al finalizar el examen (Recomendado)</option>
+                <option value="final">Al finalizar el examen</option>
                 <option value="instant">Inmediato (Al marcar cada respuesta)</option>
             </select>
         </div>
@@ -130,11 +138,27 @@
         </div>
     </div>
 
-    <!-- NUEVA PANTALLA: CONFIGURACIÓN DE PDF / IMPRESIÓN -->
+    <!-- PANTALLA: CONFIGURACIÓN DE PDF / IMPRESIÓN -->
     <div id="print-setup-screen" class="container screen">
         <h2>Generar Examen PDF</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Configura cómo quieres que se genere tu simulacro en hoja. Se formateará automáticamente a 2 columnas para optimizar el papel.</p>
         
+        <!-- NUEVO: SELECTORES DE MATERIA Y PARCIAL PARA IMPRIMIR -->
+        <div class="form-group" style="display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--primary-color);">
+            <div style="flex: 1; min-width: 200px;">
+                <label style="color: var(--primary-color);">Materia a imprimir:</label>
+                <select id="print-subject" onchange="updatePrintPartialDropdown()">
+                    <!-- Se inyecta por JS -->
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <label style="color: var(--primary-color);">Instancia a imprimir:</label>
+                <select id="print-partial" onchange="updatePrintRangeInfo()">
+                    <!-- Se inyecta por JS -->
+                </select>
+            </div>
+        </div>
+
         <div class="form-group">
             <label>Cantidad de preguntas a imprimir (Max <span id="print-max-q">0</span>):</label>
             <input type="number" id="print-cfg-qty" value="30" min="1" oninput="updatePrintRangeInfo()">

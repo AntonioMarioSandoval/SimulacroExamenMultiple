@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initApp() {
     customDatabase = JSON.parse(localStorage.getItem('customQuestions')) || [];
-    updateActiveSubject(); 
+    updateHomeDropdowns(); 
+    updatePrintDropdowns();
     initAdminOptions(); 
 }
 
@@ -52,6 +53,58 @@ function getAllQuestions() {
         }
     });
     return combined;
+}
+
+// ==========================================
+// SISTEMA DE FILTROS DINÁMICOS EN INICIO
+// ==========================================
+function updateHomeDropdowns() {
+    const allQ = getAllQuestions();
+    const subjects = [...new Set(allQ.map(q => q.subject))];
+    
+    const subjectSelect = document.getElementById('global-subject');
+    if(!subjectSelect) return;
+    const currentSubject = subjectSelect.value;
+    
+    subjectSelect.innerHTML = '';
+    if (subjects.length === 0) {
+        subjectSelect.innerHTML = '<option value="">No hay materias registradas</option>';
+    } else {
+        subjects.sort().forEach(sub => {
+            subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+        });
+        if (subjects.includes(currentSubject)) {
+            subjectSelect.value = currentSubject;
+        }
+    }
+
+    updatePartialDropdown(); 
+}
+
+function updatePartialDropdown() {
+    const allQ = getAllQuestions();
+    const subjectSelect = document.getElementById('global-subject');
+    const partialSelect = document.getElementById('global-partial');
+    if(!subjectSelect || !partialSelect) return;
+
+    const selectedSubject = subjectSelect.value;
+    const availablePartials = [...new Set(allQ.filter(q => q.subject === selectedSubject).map(q => q.partial || "Parcial 1"))];
+
+    const currentPartial = partialSelect.value;
+    partialSelect.innerHTML = '';
+    
+    if (availablePartials.length === 0) {
+        partialSelect.innerHTML = '<option value="">Sin preguntas</option>';
+    } else {
+        availablePartials.sort().forEach(p => {
+            partialSelect.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+        if (availablePartials.includes(currentPartial)) {
+            partialSelect.value = currentPartial;
+        }
+    }
+
+    updateActiveSubject(); 
 }
 
 function getActiveSubject() {
@@ -73,30 +126,31 @@ function updateActiveSubject() {
     
     const maxQElem = document.getElementById('max-q');
     const qtyElem = document.getElementById('cfg-qty');
-    const printMaxQElem = document.getElementById('print-max-q');
-    const printQtyElem = document.getElementById('print-cfg-qty');
     
     if (maxQElem) maxQElem.innerText = database.length;
-    if (printMaxQElem) printMaxQElem.innerText = database.length;
     
     if (qtyElem) {
         if (database.length === 0) qtyElem.value = 0;
         else if (parseInt(qtyElem.value) > database.length || qtyElem.value == 0) qtyElem.value = database.length > 30 ? 30 : database.length;
     }
 
-    if (printQtyElem) {
-        if (database.length === 0) printQtyElem.value = 0;
-        else if (parseInt(printQtyElem.value) > database.length || printQtyElem.value == 0) printQtyElem.value = database.length > 30 ? 30 : database.length;
-    }
-    
     updateRangeInfo();
-    updatePrintRangeInfo();
 }
 
 function navTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
+    // Control de la visibilidad del botón de reiniciar
+    const restartBtn = document.getElementById('header-restart-btn');
+    if(restartBtn) {
+        if(screenId === 'exam-screen' && instantFeedback && !isStudyMode) {
+            restartBtn.style.display = 'block';
+        } else {
+            restartBtn.style.display = 'none';
+        }
+    }
+
     const backBtn = document.getElementById('header-back-btn');
     if (screenId === 'home-screen') {
         backBtn.style.display = 'none';
@@ -105,7 +159,10 @@ function navTo(screenId) {
     }
 
     if (screenId === 'setup-screen') updateRangeInfo();
-    if (screenId === 'print-setup-screen') updatePrintRangeInfo();
+    if (screenId === 'print-setup-screen') {
+        updatePrintDropdowns();
+        updatePrintRangeInfo();
+    }
     if (screenId === 'admin-screen') initAdminOptions();
 }
 
@@ -329,7 +386,8 @@ async function saveAdminQuestion() {
     alert(`¡Pregunta guardada exitosamente para ${subject} - ${partial}!`);
     
     initAdminOptions(); 
-    updateActiveSubject();
+    updateHomeDropdowns(); 
+    updatePrintDropdowns();
 }
 
 function exportDatabase() {
@@ -373,7 +431,7 @@ function toggleRange() {
 function updateRangeInfo() {
     const infoBox = document.getElementById('range-info');
     if (database.length === 0) {
-        infoBox.innerHTML = "<span style='color: #ef4444;'>No hay preguntas disponibles para esta materia y parcial.</span>";
+        infoBox.innerHTML = "<span style='color: #ef4444;'>No hay preguntas disponibles para esta materia y parcial. Ve a Administrar Preguntas.</span>";
         return;
     }
     
@@ -381,6 +439,7 @@ function updateRangeInfo() {
     let startId = parseInt(document.getElementById('cfg-start').value) || 1;
 
     if (startId < 1) startId = 1;
+    
     let startIndex = database.findIndex(q => q.id >= startId);
     if (startIndex === -1) {
         startIndex = database.length - 1;
@@ -394,6 +453,7 @@ function updateRangeInfo() {
         endIndex = database.length - 1;
         let cantReal = endIndex - startIndex + 1;
         let actualEndId = database[endIndex].id;
+        
         infoBox.style.color = "#ffb74d"; 
         infoBox.innerHTML = `⚠️ Iniciarás en la pregunta <strong>${actualStartId}</strong> y llegarás hasta el final (<strong>${actualEndId}</strong>).<br><small>Solo hay ${cantReal} preguntas disponibles desde ese punto.</small>`;
     } else {
@@ -404,8 +464,60 @@ function updateRangeInfo() {
 }
 
 // ==========================================
-// NUEVO: SISTEMA DE GENERACIÓN DE PDF
+// NUEVO: SISTEMA DE GENERACIÓN DE PDF Y SUS FILTROS
 // ==========================================
+
+function updatePrintDropdowns() {
+    const allQ = getAllQuestions();
+    const subjects = [...new Set(allQ.map(q => q.subject))];
+    const subjectSelect = document.getElementById('print-subject');
+    if(!subjectSelect) return;
+    
+    const currentSubject = subjectSelect.value;
+    subjectSelect.innerHTML = '';
+    if (subjects.length === 0) {
+        subjectSelect.innerHTML = '<option value="">No hay materias registradas</option>';
+    } else {
+        subjects.sort().forEach(sub => {
+            subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+        });
+        if (subjects.includes(currentSubject)) {
+            subjectSelect.value = currentSubject;
+        } else {
+            const globalSub = getActiveSubject();
+            if (subjects.includes(globalSub)) subjectSelect.value = globalSub;
+        }
+    }
+    updatePrintPartialDropdown(); 
+}
+
+function updatePrintPartialDropdown() {
+    const allQ = getAllQuestions();
+    const subjectSelect = document.getElementById('print-subject');
+    const partialSelect = document.getElementById('print-partial');
+    if(!subjectSelect || !partialSelect) return;
+
+    const selectedSubject = subjectSelect.value;
+    const availablePartials = [...new Set(allQ.filter(q => q.subject === selectedSubject).map(q => q.partial || "Parcial 1"))];
+
+    const currentPartial = partialSelect.value;
+    partialSelect.innerHTML = '';
+    
+    if (availablePartials.length === 0) {
+        partialSelect.innerHTML = '<option value="">Sin preguntas</option>';
+    } else {
+        availablePartials.sort().forEach(p => {
+            partialSelect.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+        if (availablePartials.includes(currentPartial)) {
+            partialSelect.value = currentPartial;
+        } else {
+            const globalPart = getActivePartial();
+            if (availablePartials.includes(globalPart)) partialSelect.value = globalPart;
+        }
+    }
+    updatePrintRangeInfo(); 
+}
 
 function togglePrintRange() {
     const order = document.getElementById('print-cfg-order').value;
@@ -415,43 +527,72 @@ function togglePrintRange() {
 
 function updatePrintRangeInfo() {
     const infoBox = document.getElementById('print-range-info');
-    if (database.length === 0) {
-        infoBox.innerHTML = "<span style='color: #ef4444;'>No hay preguntas disponibles para imprimir.</span>";
+    const subjectSelect = document.getElementById('print-subject');
+    const partialSelect = document.getElementById('print-partial');
+    
+    let pool = [];
+    if (subjectSelect && partialSelect) {
+        pool = getAllQuestions().filter(q => q.subject === subjectSelect.value && (q.partial || "Parcial 1") === partialSelect.value);
+    } else {
+        pool = database;
+    }
+
+    if (pool.length === 0) {
+        if (infoBox) infoBox.innerHTML = "<span style='color: #ef4444;'>No hay preguntas disponibles para imprimir.</span>";
         return;
     }
     
     let qty = parseInt(document.getElementById('print-cfg-qty').value) || 1;
     let startId = parseInt(document.getElementById('print-cfg-start').value) || 1;
 
-    if (startId < 1) startId = 1;
-    let startIndex = database.findIndex(q => q.id >= startId);
-    if (startIndex === -1) {
-        startIndex = database.length - 1;
-        startId = database[startIndex].id; 
+    const printMaxQElem = document.getElementById('print-max-q');
+    const printQtyElem = document.getElementById('print-cfg-qty');
+    
+    if (printMaxQElem) printMaxQElem.innerText = pool.length;
+    
+    if (printQtyElem) {
+        if (parseInt(printQtyElem.value) > pool.length || printQtyElem.value == 0) printQtyElem.value = pool.length > 30 ? 30 : pool.length;
     }
 
-    let actualStartId = database[startIndex].id;
+    if (startId < 1) startId = 1;
+    let startIndex = pool.findIndex(q => q.id >= startId);
+    if (startIndex === -1) {
+        startIndex = pool.length - 1;
+        startId = pool[startIndex].id; 
+    }
+
+    let actualStartId = pool[startIndex].id;
     let endIndex = startIndex + qty - 1;
     
-    if (endIndex >= database.length) {
-        endIndex = database.length - 1;
+    if (endIndex >= pool.length) {
+        endIndex = pool.length - 1;
         let cantReal = endIndex - startIndex + 1;
-        let actualEndId = database[endIndex].id;
-        infoBox.style.color = "#ffb74d"; 
-        infoBox.innerHTML = `⚠️ Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta el final (<strong>${actualEndId}</strong>).<br><small>Solo hay ${cantReal} preguntas disponibles.</small>`;
+        let actualEndId = pool[endIndex].id;
+        if (infoBox) {
+            infoBox.style.color = "#ffb74d"; 
+            infoBox.innerHTML = `⚠️ Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta el final (<strong>${actualEndId}</strong>).<br><small>Solo hay ${cantReal} preguntas disponibles.</small>`;
+        }
     } else {
-        let actualEndId = database[endIndex].id;
-        infoBox.style.color = "#4db6ac"; 
-        infoBox.innerHTML = `📌 Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta la N° <strong>${actualEndId}</strong> (${qty} preguntas).`;
+        let actualEndId = pool[endIndex].id;
+        if (infoBox) {
+            infoBox.style.color = "#4db6ac"; 
+            infoBox.innerHTML = `📌 Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta la N° <strong>${actualEndId}</strong> (${qty} preguntas).`;
+        }
     }
 }
 
 function generatePDF() {
-    if(database.length === 0) return alert("No hay preguntas para imprimir en la materia y parcial seleccionados.");
+    const subjectSelect = document.getElementById('print-subject');
+    const partialSelect = document.getElementById('print-partial');
+    const subject = subjectSelect ? subjectSelect.value : getActiveSubject();
+    const partial = partialSelect ? partialSelect.value : getActivePartial();
+    
+    let pool = getAllQuestions().filter(q => q.subject === subject && (q.partial || "Parcial 1") === partial);
+
+    if(pool.length === 0) return alert("No hay preguntas para imprimir en la materia y parcial seleccionados.");
     
     let qty = parseInt(document.getElementById('print-cfg-qty').value) || 10;
     let order = document.getElementById('print-cfg-order').value;
-    let pool = [...database];
 
     let printQuestions = [];
     if (order === 'orden') {
@@ -465,12 +606,9 @@ function generatePDF() {
     }
 
     const printSection = document.getElementById('print-section');
-    const subject = getActiveSubject();
-    const partial = getActivePartial();
     
     let html = `
         <div class="print-header">
-            <h2>Simulacro de Examen</h2>
             <h3>${subject} - ${partial}</h3>
             <p><strong>Nombre y Apellido:</strong> _________________________________________ &nbsp;&nbsp;&nbsp;&nbsp; <strong>Fecha:</strong> ___/___/___</p>
         </div>
@@ -491,7 +629,6 @@ function generatePDF() {
     html += `</div>`;
     printSection.innerHTML = html;
 
-    // Disparar la ventana de impresión
     setTimeout(() => {
         alert("Para guardarlo en tu computadora, al abrirse la ventana de impresión busca la opción 'Destino' o 'Impresora' y selecciona 'Guardar como PDF'.");
         window.print();
@@ -499,8 +636,19 @@ function generatePDF() {
 }
 
 // ==========================================
-// SISTEMAS DE EXAMEN
+// SISTEMAS DE EXAMEN Y ALEATORIEDAD
 // ==========================================
+
+function shuffleQuestionOptions(q) {
+    let optionsWithIndex = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct }));
+    
+    optionsWithIndex.sort(() => Math.random() - 0.5);
+    
+    let newCorrect = optionsWithIndex.findIndex(o => o.isCorrect);
+    let newOptions = optionsWithIndex.map(o => o.text);
+    
+    return { ...q, options: newOptions, correct: newCorrect };
+}
 
 function startStudyMode() {
     if(database.length === 0) return alert("No hay preguntas para la combinación seleccionada.");
@@ -524,6 +672,9 @@ function startExam() {
     const feedbackConfig = document.getElementById('cfg-feedback');
     instantFeedback = feedbackConfig ? (feedbackConfig.value === 'instant') : false;
     
+    const orderOptionsConfig = document.getElementById('cfg-options-order');
+    const randomizeOptions = orderOptionsConfig ? (orderOptionsConfig.value === 'aleatorio') : false;
+    
     let qty = parseInt(document.getElementById('cfg-qty').value) || 10;
     let timeMinutes = parseInt(document.getElementById('cfg-time').value) || 30;
     let order = document.getElementById('cfg-order').value;
@@ -539,6 +690,10 @@ function startExam() {
         currentQuestions = pool.slice(0, qty);
     }
 
+    if (randomizeOptions) {
+        currentQuestions = currentQuestions.map(q => shuffleQuestionOptions(q));
+    }
+
     document.getElementById('exam-title').innerText = `Evaluación: ${getActiveSubject()} - ${getActivePartial()}`;
     
     document.getElementById('btn-finish').style.display = instantFeedback ? 'none' : 'inline-block';
@@ -549,6 +704,21 @@ function startExam() {
     renderQuestions();
     startTimer(timeMinutes * 60);
     navTo('exam-screen');
+}
+
+function restartExam() {
+    clearInterval(timerInterval);
+    answeredQuestionsCount = 0;
+    
+    document.getElementById('btn-finish').style.display = instantFeedback ? 'none' : 'inline-block';
+    document.getElementById('results-summary').style.display = 'none';
+    
+    renderQuestions();
+    
+    let timeMinutes = parseInt(document.getElementById('cfg-time').value) || 30;
+    startTimer(timeMinutes * 60);
+    
+    window.scrollTo(0, 0);
 }
 
 function handleQuestionAnswer(qIndex) {
@@ -649,6 +819,7 @@ function finishExam(autoFinish = false) {
 
     clearInterval(timerInterval);
     document.getElementById('timer-display').style.display = 'none';
+    if(document.getElementById('header-restart-btn')) document.getElementById('header-restart-btn').style.display = 'none';
     
     let score = 0;
 
