@@ -1787,6 +1787,136 @@
                 "NVD"
             ],
             "correct": 0
+        },
+        {
+            "id": 67,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Cuál es el puerto por defecto para transmisiones HTTPS?",
+            "options": [
+                "80",
+                "443",
+                "843",
+                "8080"
+            ],
+            "correct": 1
+        },
+        {
+            "id": 68,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Cuál es el significado de SSL?",
+            "options": [
+                "Secure Socket Level",
+                "Simple Socket Layer",
+                "Secure Sockets Layer",
+                "Standard Socket Layer"
+            ],
+            "correct": 2
+        },
+        {
+            "id": 69,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "Cual es el significado del acrónimo DSA",
+            "options": [
+                "Ninguna de estas opciones",
+                "Data Signature Algorithm",
+                "Digital Signature Algorithm",
+                "Dynamic Signature Algorithm"
+            ],
+            "correct": 2
+        },
+        {
+            "id": 70,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "Según Deming, cuál de los siguientes elementos no es una etapa del Ciclo de Calidad Total?",
+            "options": [
+                "Auditar",
+                "Planificar",
+                "Actuar",
+                "Hacer"
+            ],
+            "correct": 0
+        },
+        {
+            "id": 71,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Cuál de los siguientes es un método de Autorización en donde se asegura la información mediante etiquetas de sensibilidad en la información y comparando esto con el nivel de sensibilidad de un usuario?",
+            "options": [
+                "Discretionary Access Control (DAC)",
+                "Role Based Access Control (RBAC)",
+                "Mandatory Access Control (MAC)",
+                "Ninguna de las opciones"
+            ],
+            "correct": 2
+        },
+        {
+            "id": 72,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Qué se utiliza cuando una clave pública pierde su validez y debe ser anulada?",
+            "options": [
+                "La clave privada del certificado",
+                "Un Certificado de revocación",
+                "No se requieren acciones, simplemente se procede a crear un nuevo certificado",
+                "Un mail de cancelación firmado digitalmente"
+            ],
+            "correct": 1
+        },
+        {
+            "id": 73,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Qué modelo de infraestructura de seguridad utiliza PGP?",
+            "options": [
+                "Anillo o Círculo de confianza",
+                "PKI - Infraestructura de Clave Pública",
+                "Ninguna opción es válida",
+                "Identificación integrada de seguridad"
+            ],
+            "correct": 0
+        },
+        {
+            "id": 74,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "La tecnología de TLS es un aporte para reducir la probabilidad de cuál de los siguientes tipos de ataque?",
+            "options": [
+                "Fallas Criptográficas",
+                "Almacenamiento criptográfico inseguro",
+                "Inyección",
+                "XSS - Cross site reference"
+            ],
+            "correct": 1
+        },
+        {
+            "id": 75,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Para qué se utiliza la firma digital?",
+            "options": [
+                "Garantizar la autenticidad de datos",
+                "Generar datos aleatorios",
+                "Garantizar la confidencialidad de datos",
+                "Ninguna de estas opciones"
+            ],
+            "correct": 0
+        },
+        {
+            "id": 76,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "¿Cuál de las siguientes es la encargada de firmar documentos con la finalidad de probar que existían antes de un determinado instante de tiempo?",
+            "options": [
+                "Autoridad de Certificación",
+                "Autoridad de Registro",
+                "Autoridad de Validación",
+                "Autoridad de Sellado de Tiempo"
+            ],
+            "correct": 3
         }
     ],
     "development": []
