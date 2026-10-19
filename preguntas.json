@@ -1717,7 +1717,7 @@
             "partial": "Parcial 1",
             "question": "¿Cuál de las siguientes opciones NO es una buena práctica para evitar vulnerabilidades de XSS?",
             "options": [
-                "Validación de entrada positiva o de",
+                "Validación de entrada positiva o de Lista blanca",
                 "Ninguna de estas opciones",
                 "Utilizar APIs de auto-sanitización",
                 "Codificar los datos no confiables basados en el contexto donde serán ubicados"
