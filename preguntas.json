@@ -1839,7 +1839,7 @@
                 "Diseño",
                 "Construccion"
             ],
-            "correct": 4
+            "correct": 3
         },
         {
             "id": 5,
@@ -1943,7 +1943,7 @@
                 "Páginas y credenciales en formularios",
                 "Entropía de credencial de sesión"
             ],
-            "correct": 2
+            "correct": 3
         },
         {
             "id": 13,
@@ -2090,7 +2090,7 @@
                 "Básica y segura, Basada en formas, Integrada, Basada en certificado, Fuerte",
                 "Basada en formas, Básica y segura, Integrada, Basada en certificado, Fuerte"
             ],
-            "correct": 2
+            "correct": 3
         },
         {
             "id": 24,
@@ -2103,7 +2103,7 @@
                 "Opportunistic",
                 "Standard"
             ],
-            "correct": 2
+            "correct": 1
         },
         {
             "id": 25,
@@ -2116,7 +2116,7 @@
                 "18",
                 "22"
             ],
-            "correct": 2
+            "correct": 3
         },
         {
             "id": 26,
@@ -2213,7 +2213,7 @@
             "id": 33,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 2",
-            "question": "¿Cuál de los siguientes algoritmos NO requiere confidencialidad en a distribución de la clase?",
+            "question": "¿Cuál de los siguientes algoritmos NO requiere confidencialidad en la distribución de la clave?",
             "options": [
                 "AES",
                 "ElGamal",
@@ -2728,6 +2728,32 @@
                 "ECB y CBC"
             ],
             "correct": 0
+        },
+        {
+            "id": 73,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 2",
+            "question": "Marque la respuesta correcta segun indica el siguiente mensaje generado por el cifrado del Cesar: \"od uhvsxhvwd fruuhfwd frqwlhqh od sdodeud ixhjr\"",
+            "options": [
+                "Los videos tienen salsa",
+                "Hay estrellas en el cielo",
+                "La torre es demasiado alta",
+                "El fuego se apagara pronto"
+            ],
+            "correct": 3
+        },
+        {
+            "id": 74,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 2",
+            "question": "¿Que elemento debe ser excluido del log o bitácora de la aplicación?",
+            "options": [
+                "Autenticaciones exitosas y fallidas",
+                "Eventos legales",
+                "Valores de identificación de la session",
+                "Código de estado HTTP"
+            ],
+            "correct": 2
         }
     ],
     "development": []
