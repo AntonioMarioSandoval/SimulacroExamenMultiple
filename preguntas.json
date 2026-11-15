@@ -2754,6 +2754,32 @@
                 "Código de estado HTTP"
             ],
             "correct": 2
+        },
+        {
+            "id": 75,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 2",
+            "question": "Determine el mensaje original para el siguiente cifrado obtenido mediante el cifrado de XOR  solamente. Valor cifrado: 101110110010. Contraseña: 011100110110",
+            "options": [
+                "101010100011",
+                "110010000100",
+                "001110110110",
+                "111100111010"
+            ],
+            "correct": 1
+        },
+        {
+            "id": 76,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 2",
+            "question": "¿Cómo opera el modo EXB (Electronic Codebook)?",
+            "options": [
+                "Divide el mensaje en partes y cifra cada parte de manera independiente",
+                "Realiza un XOR con el bloque previo antes de cifrar cada parte",
+                "Utiliza un vector de inicialización para cifrar el mensaje",
+                "Opera de manera similar a CDB, pero con bloques de salida"
+            ],
+            "correct": 0
         }
     ],
     "development": []
