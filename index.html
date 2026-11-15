@@ -10,7 +10,7 @@
     <header>
         <div style="display: flex; align-items: center;">
             <button id="header-back-btn" class="back-btn" onclick="goHome()" style="display: none;" title="Volver al Inicio">
-                &#8592;
+                ←
             </button>
             <h1>UNLaM | Simulación de Evaluación</h1>
         </div>
@@ -28,7 +28,6 @@
             <div class="home-header">
                 <h2>Simulador de Examen</h2>
                 
-                <!-- SELECTORES GLOBALES DINÁMICOS -->
                 <div style="margin-top: 15px; margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                         <label style="color: var(--text-color); font-weight: bold; width: 80px; text-align: right;">Materia:</label>
@@ -75,14 +74,6 @@
                         <span>Halla respuestas exactas registradas</span>
                     </div>
                 </button>
-
-                <!--<button class="btn-large" onclick="navTo('admin-screen')" style="flex: 100%; background-color: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.5);">
-                    <span class="btn-icon">📝</span>
-                    <div class="btn-text">
-                        <strong>Administrar Preguntas</strong>
-                        <span>Crea, edita o exporta preguntas</span>
-                    </div>
-                </button>-->
             </div>
         </div>
     </div>
@@ -141,20 +132,17 @@
     <!-- PANTALLA: CONFIGURACIÓN DE PDF / IMPRESIÓN -->
     <div id="print-setup-screen" class="container screen">
         <h2>Generar Examen PDF</h2>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Configura cómo quieres que se genere tu simulacro en hoja. Se formateará automáticamente a 2 columnas para optimizar el papel.</p>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Configura cómo quieres que se genere tu simulacro en hoja. Se formateará automáticamente a 2 columnas con preguntas en recuadros y opciones por letras.</p>
         
-        <!-- NUEVO: SELECTORES DE MATERIA Y PARCIAL PARA IMPRIMIR -->
         <div class="form-group" style="display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--primary-color);">
             <div style="flex: 1; min-width: 200px;">
                 <label style="color: var(--primary-color);">Materia a imprimir:</label>
                 <select id="print-subject" onchange="updatePrintPartialDropdown()">
-                    <!-- Se inyecta por JS -->
                 </select>
             </div>
             <div style="flex: 1; min-width: 200px;">
                 <label style="color: var(--primary-color);">Instancia a imprimir:</label>
                 <select id="print-partial" onchange="updatePrintRangeInfo()">
-                    <!-- Se inyecta por JS -->
                 </select>
             </div>
         </div>
@@ -285,7 +273,7 @@
 
     <!-- MODAL DE IMÁGENES -->
     <div id="image-modal" class="modal" onclick="closeModal()">
-        <span class="close-modal">&times;</span>
+        <span class="close-modal">×</span>
         <img class="modal-content" id="modal-img">
     </div>
 

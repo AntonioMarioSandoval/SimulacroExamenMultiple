@@ -141,7 +141,6 @@ function navTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
-    // Control de la visibilidad del botón de reiniciar
     const restartBtn = document.getElementById('header-restart-btn');
     if(restartBtn) {
         if(screenId === 'exam-screen' && instantFeedback && !isStudyMode) {
@@ -168,7 +167,6 @@ function navTo(screenId) {
 
 function goHome() {
     const examScreen = document.getElementById('exam-screen');
-    const btnFinish = document.getElementById('btn-finish');
     
     if (examScreen.classList.contains('active') && document.getElementById('results-summary').style.display === 'none' && !isStudyMode) {
         if (!confirm("El examen está en curso. ¿Estás seguro de que deseas salir y perder tu progreso?")) return;
@@ -464,7 +462,7 @@ function updateRangeInfo() {
 }
 
 // ==========================================
-// NUEVO: SISTEMA DE GENERACIÓN DE PDF Y SUS FILTROS
+// SISTEMA DE GENERACIÓN DE PDF Y SUS FILTROS
 // ==========================================
 
 function updatePrintDropdowns() {
@@ -610,19 +608,30 @@ function generatePDF() {
     let html = `
         <div class="print-header">
             <h3>${subject} - ${partial}</h3>
-            <p><strong>Nombre y Apellido:</strong> _________________________________________ &nbsp;&nbsp;&nbsp;&nbsp; <strong>Fecha:</strong> ___/___/___</p>
+            <p><strong>Nombre y Apellido:</strong> _________________________________________      <strong>Fecha:</strong> ___/___/___</p>
         </div>
         <div class="print-columns">
     `;
 
+    // Array de letras para mapear las opciones (a., b., c., d., etc.)
+    const optionLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
     printQuestions.forEach((q, index) => {
         let imgHtml = q.image ? `<img src="${q.image}" class="print-img">` : '';
         html += `<div class="print-question">`;
+        
+        // El rectángulo (print-question-box) ahora encierra únicamente al enunciado e imagen
+        html += `<div class="print-question-box">`;
         html += `<p><strong>${index + 1}) ${q.question}</strong></p>`;
         html += imgHtml;
-        q.options.forEach(opt => {
-            html += `<div class="print-option"><span class="print-square"></span> <span class="print-opt-text">${opt}</span></div>`;
+        html += `</div>`;
+        
+        // Las opciones quedan fuera del rectángulo de la pregunta
+        q.options.forEach((opt, optIdx) => {
+            let currentLetter = optionLetters[optIdx] || (optIdx + 1);
+            html += `<div class="print-option"><span class="print-opt-letter">${currentLetter})</span> <span class="print-opt-text">${opt}</span></div>`;
         });
+        
         html += `</div>`;
     });
 

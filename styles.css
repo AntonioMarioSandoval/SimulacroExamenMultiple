@@ -426,29 +426,24 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
 }
 
 /* ==========================================
-   NUEVO: ESTILOS PARA IMPRESIÓN (PDF)
-   CON TAMAÑOS REDUCIDOS (Aproximación a 72%)
+   ESTILOS DE IMPRESIÓN (PDF MODIFICADOS)
    ========================================== */
 @media print {
-    /* Forzamos a quitar todos los márgenes extra del navegador y definimos tamaño A4 */
     @page {
         margin: 1cm;
         size: A4 portrait;
     }
 
-    /* Forzamos colores claros y bajamos el tamaño de fuente general a 8.5pt */
     body { 
         background-color: white !important; 
         color: black !important; 
         font-size: 9pt !important; 
     }
     
-    /* Ocultamos elementos que no van en papel */
     header, .screen, .modal, button { 
         display: none !important; 
     }
 
-    /* Mostramos el contenedor de impresión */
     #print-section { 
         display: block !important; 
         width: 100%; 
@@ -471,39 +466,43 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
     .print-header h2 { font-size: 13pt; margin-bottom: 3px; }
     .print-header h3 { font-size: 10pt; margin-bottom: 5px; }
 
-    /* Sistema de 2 columnas nativo con menos brecha */
     .print-columns { 
         column-count: 2; 
         column-gap: 20px; 
     }
 
-    /* Evitar que una pregunta se corte a la mitad de una columna a otra y reducir su espacio */
     .print-question { 
         break-inside: avoid-column; 
-        margin-bottom: 12px; 
-        font-size: 8.5pt;
+        margin-bottom: 6px; 
+        font-size: 8pt;
     }
 
-    .print-question p {
+    /* El rectángulo exclusivo que encierra únicamente la pregunta y su imagen de apoyo */
+    .print-question-box {
+        padding: 3px 5px;
+        border: 1px solid #444;
+        border-radius: 4px;
+        background-color: #fff;
+        margin-bottom: 5px;
+    }
+
+    .print-question-box p {
         margin-bottom: 4px;
         line-height: 1.2;
     }
 
-    /* Caja de opción (Cuadradito para marcar más chico) y menos espacio */
+    /* Opciones formateadas con letras (a., b., c., etc.) por fuera del cuadro de la pregunta */
     .print-option { 
         display: flex; 
         align-items: flex-start; 
-        margin-bottom: 3px; 
+        margin-bottom: 2px;
+        padding-left: 4px;
     }
 
-    .print-square { 
-        display: inline-block; 
-        width: 10px; 
-        height: 10px; 
-        border: 1px solid black; 
-        margin-right: 6px; 
-        margin-top: 2px;
-        flex-shrink: 0; 
+    .print-opt-letter {
+        font-weight: bold;
+        margin-right: 6px;
+        flex-shrink: 0;
     }
 
     .print-opt-text {
@@ -511,10 +510,9 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
         line-height: 1.15;
     }
 
-    /* Imágenes más pequeñas para no comerse media hoja */
     .print-img { 
         max-width: 100%; 
-        max-height: 100px; 
+        max-height: 90px; 
         display: block; 
         margin-bottom: 5px; 
         border: 1px solid #ccc;
