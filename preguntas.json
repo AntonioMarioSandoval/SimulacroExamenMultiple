@@ -2090,7 +2090,7 @@
                 "Básica y segura, Basada en formas, Integrada, Basada en certificado, Fuerte",
                 "Basada en formas, Básica y segura, Integrada, Basada en certificado, Fuerte"
             ],
-            "correct": 3
+            "correct": 2
         },
         {
             "id": 24,
@@ -2103,7 +2103,7 @@
                 "Opportunistic",
                 "Standard"
             ],
-            "correct": 1
+            "correct": 2
         },
         {
             "id": 25,
@@ -2116,7 +2116,7 @@
                 "18",
                 "22"
             ],
-            "correct": 3
+            "correct": 2
         },
         {
             "id": 26,
