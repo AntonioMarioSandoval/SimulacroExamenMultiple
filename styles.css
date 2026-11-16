@@ -150,10 +150,6 @@ header h1 {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
-.btn-icon {
-    font-size: 2rem;
-}
-
 .btn-text {
     display: flex;
     flex-direction: column;
@@ -422,7 +418,6 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
     .home-header h2 { font-size: 1.5rem; }
     .home-actions { flex-direction: column; }
     .btn-large { width: 100%; padding: 12px 15px; }
-    .btn-icon { font-size: 1.5rem; }
 }
 
 /* ==========================================
@@ -477,7 +472,6 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
         font-size: 8pt;
     }
 
-    /* El rectángulo exclusivo que encierra únicamente la pregunta y su imagen de apoyo */
     .print-question-box {
         padding: 3px 5px;
         border: 1px solid #444;
@@ -491,7 +485,6 @@ button.btn-secondary:not(.btn-large):not(.back-btn):hover {
         line-height: 1.2;
     }
 
-    /* Opciones formateadas con letras (a., b., c., etc.) por fuera del cuadro de la pregunta */
     .print-option { 
         display: flex; 
         align-items: flex-start; 

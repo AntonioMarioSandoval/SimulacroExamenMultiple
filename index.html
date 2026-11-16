@@ -18,19 +18,19 @@
             <!-- Contador en vivo (Solo visible en modalidad Inmediato) -->
             <div id="live-score-counter" style="display: none; font-size: 0.95rem; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                 <span>Total: <strong id="live-total">0</strong></span> | 
-                <span style="color: #34d399;" title="Acertadas">✅ <strong id="live-correct">0</strong></span> | 
-                <span style="color: #f87171;" title="Equivocadas">❌ <strong id="live-incorrect">0</strong></span> | 
-                <span style="color: #fbbf24;" title="Restantes">⏳ <strong id="live-remaining">0</strong></span>
+                <span style="color: #34d399;" title="Acertadas">Acertadas: <strong id="live-correct">0</strong></span> | 
+                <span style="color: #f87171;" title="Equivocadas">Equivocadas: <strong id="live-incorrect">0</strong></span> | 
+                <span style="color: #fbbf24;" title="Restantes">Restantes: <strong id="live-remaining">0</strong></span>
             </div>
             
-            <!-- Botón de reiniciar (Visible durante Inmediato o al finalizar cualquier examen) -->
+            <!-- Botón de reiniciar -->
             <button id="header-restart-btn" class="btn-secondary" onclick="restartExam()" style="display: none; padding: 4px 10px; font-size: 0.9rem; border-radius: var(--radius-md);">
-                🔄 Reiniciar
+                Reiniciar
             </button>
             
-            <!-- Botón de menú principal (Solo visible al finalizar el examen) -->
+            <!-- Botón de menú principal -->
             <button id="header-home-btn" class="btn-secondary" onclick="goHome()" style="display: none; padding: 4px 10px; font-size: 0.9rem; border-radius: var(--radius-md); border-color: #f87171; color: #f87171;">
-                🏠 Menú Principal
+                Menú Principal
             </button>
 
             <div id="timer-display" style="display: none;">00:00</div>
@@ -59,7 +59,6 @@
             
             <div class="home-actions" style="flex-wrap: wrap;">
                 <button class="btn-large" onclick="navTo('setup-screen')" style="flex: 1; min-width: 250px;">
-                    <span class="btn-icon">⚙️</span>
                     <div class="btn-text">
                         <strong>Comenzar Examen</strong>
                         <span>Realiza un examen a tu manera</span>
@@ -67,7 +66,6 @@
                 </button>
                 
                 <button class="btn-large btn-secondary" onclick="startStudyMode()" style="flex: 1; min-width: 250px;">
-                    <span class="btn-icon">📚</span>
                     <div class="btn-text">
                         <strong>Modo Estudio</strong>
                         <span>Ver todas las respuestas correctas</span>
@@ -75,7 +73,6 @@
                 </button>
 
                 <button class="btn-large" onclick="navTo('print-setup-screen')" style="flex: 1; min-width: 250px; background-color: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.5);">
-                    <span class="btn-icon">🖨️</span>
                     <div class="btn-text">
                         <strong>Imprimir / Generar PDF</strong>
                         <span>Arma un examen en hoja para resolver a mano</span>
@@ -83,7 +80,6 @@
                 </button>
 
                 <button class="btn-large btn-secondary" onclick="navTo('search-screen')" style="flex: 1; min-width: 250px; background-color: rgba(0, 105, 77, 0.05); border-color: rgba(0, 105, 77, 0.4);">
-                    <span class="btn-icon">🔍</span>
                     <div class="btn-text">
                         <strong>Buscador Rápido</strong>
                         <span>Halla respuestas exactas registradas</span>
@@ -248,7 +244,7 @@
 
         <div style="margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
             <button class="btn-secondary" onclick="exportDatabase()" style="width: 100%; max-width: 400px; border-color: #8b5cf6; color: #8b5cf6; background: rgba(139, 92, 246, 0.05);">
-                💾 Exportar Base de Datos (.json)
+                Exportar Base de Datos (.json)
             </button>
         </div>
     </div>
@@ -290,6 +286,17 @@
     <div id="image-modal" class="modal" onclick="closeModal()">
         <span class="close-modal">×</span>
         <img class="modal-content" id="modal-img">
+    </div>
+
+    <!-- MODAL GENERAL DE AVISOS / CONFIRMACIONES -->
+    <div id="custom-modal" class="modal">
+        <div class="modal-card" style="background: var(--panel-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius-lg); max-width: 400px; width: 90%; margin: 15vh auto; text-align: center; box-shadow: var(--shadow-md);">
+            <p id="custom-modal-text" style="font-size: 1.05rem; margin-bottom: 20px; color: var(--text-color);"></p>
+            <div id="custom-modal-actions" style="display: flex; gap: 10px; justify-content: center;">
+                <button id="custom-modal-ok" onclick="closeCustomModal(true)" style="padding: 8px 20px;">Aceptar</button>
+                <button id="custom-modal-cancel" class="btn-secondary" onclick="closeCustomModal(false)" style="padding: 8px 20px; display: none;">Cancelar</button>
+            </div>
+        </div>
     </div>
 
     <!-- CONTENEDOR OCULTO EXCLUSIVO PARA EL PDF/IMPRESIÓN -->

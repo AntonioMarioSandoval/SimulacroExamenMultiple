@@ -14,6 +14,31 @@ let adminOptionCount = 2;
 let editingQuestionId = null;
 let currentEditBase64 = null;
 
+// SISTEMA DE MODAL CUSTOMIZADO (Reemplaza alert/confirm)
+let modalResolveCallback = null;
+
+function showCustomModal(text, showCancel = false) {
+    return new Promise((resolve) => {
+        modalResolveCallback = resolve;
+        const modal = document.getElementById('custom-modal');
+        const textEl = document.getElementById('custom-modal-text');
+        const cancelBtn = document.getElementById('custom-modal-cancel');
+        
+        textEl.innerText = text;
+        cancelBtn.style.display = showCancel ? 'inline-block' : 'none';
+        modal.style.display = 'block';
+    });
+}
+
+function closeCustomModal(result) {
+    const modal = document.getElementById('custom-modal');
+    modal.style.display = 'none';
+    if (modalResolveCallback) {
+        modalResolveCallback(result);
+        modalResolveCallback = null;
+    }
+}
+
 // INICIALIZACIÓN CON SERVIDOR (Netlify / GitHub Pages)
 document.addEventListener("DOMContentLoaded", () => {
     fetch('preguntas.json')
@@ -156,11 +181,12 @@ function navTo(screenId) {
     if (screenId === 'admin-screen') initAdminOptions();
 }
 
-function goHome() {
+async function goHome() {
     const examScreen = document.getElementById('exam-screen');
     
     if (examScreen.classList.contains('active') && document.getElementById('results-summary').style.display === 'none' && !isStudyMode) {
-        if (!confirm("El examen está en curso. ¿Estás seguro de que deseas salir y perder tu progreso?")) return;
+        let confirmar = await showCustomModal("El examen está en curso. ¿Estás seguro de que deseas salir y perder tu progreso?", true);
+        if (!confirmar) return;
     }
 
     clearInterval(timerInterval);
@@ -328,15 +354,24 @@ async function saveAdminQuestion() {
     const questionText = document.getElementById('admin-question').value.trim();
     
     const radioChecked = document.querySelector('input[name="admin-correct"]:checked');
-    if (!radioChecked) return alert("Por favor, selecciona cuál de las opciones es la correcta.");
+    if (!radioChecked) {
+        await showCustomModal("Por favor, selecciona cuál de las opciones es la correcta.");
+        return;
+    }
     const correctIdx = parseInt(radioChecked.value);
 
-    if (!questionText) return alert("Por favor, escribe el enunciado de la pregunta.");
+    if (!questionText) {
+        await showCustomModal("Por favor, escribe el enunciado de la pregunta.");
+        return;
+    }
 
     let options = [];
     for (let i = 0; i < adminOptionCount; i++) {
         let optText = document.getElementById(`admin-opt-${i}`).value.trim();
-        if (!optText) return alert(`Por favor, completa el texto de la opción ${i + 1}.`);
+        if (!optText) {
+            await showCustomModal("Por favor, completa el texto de la opción " + (i + 1) + ".");
+            return;
+        }
         options.push(optText);
     }
 
@@ -377,7 +412,7 @@ async function saveAdminQuestion() {
 
     localStorage.setItem('customQuestions', JSON.stringify(customDatabase));
 
-    alert(`¡Pregunta guardada exitosamente para ${subject} - ${partial}!`);
+    await showCustomModal("¡Pregunta guardada exitosamente para " + subject + " - " + partial + "!");
     
     initAdminOptions(); 
     updateHomeDropdowns(); 
@@ -449,11 +484,11 @@ function updateRangeInfo() {
         let actualEndId = database[endIndex].id;
         
         infoBox.style.color = "#ffb74d"; 
-        infoBox.innerHTML = `⚠️ Iniciarás en la pregunta <strong>${actualStartId}</strong> y llegarás hasta el final (<strong>${actualEndId}</strong>).<br><small>Solo hay ${cantReal} preguntas disponibles desde ese punto.</small>`;
+        infoBox.innerHTML = "Iniciarás en la pregunta <strong>" + actualStartId + "</strong> y llegarás hasta el final (<strong>" + actualEndId + "</strong>).<br><small>Solo hay " + cantReal + " preguntas disponibles desde ese punto.</small>";
     } else {
         let actualEndId = database[endIndex].id;
         infoBox.style.color = "#4db6ac"; 
-        infoBox.innerHTML = `📌 Rango a evaluar: N° <strong>${actualStartId}</strong> hasta N° <strong>${actualEndId}</strong> (${qty} preguntas).`;
+        infoBox.innerHTML = "Rango a evaluar: N° <strong>" + actualStartId + "</strong> hasta N° <strong>" + actualEndId + "</strong> (" + qty + " preguntas).";
     }
 }
 
@@ -477,9 +512,6 @@ function updatePrintDropdowns() {
         });
         if (subjects.includes(currentSubject)) {
             subjectSelect.value = currentSubject;
-        } else {
-            const globalSub = getActiveSubject();
-            if (subjects.includes(globalSub)) subjectSelect.value = globalSub;
         }
     }
     updatePrintPartialDropdown(); 
@@ -505,9 +537,6 @@ function updatePrintPartialDropdown() {
         });
         if (availablePartials.includes(currentPartial)) {
             partialSelect.value = currentPartial;
-        } else {
-            const globalPart = getActivePartial();
-            if (availablePartials.includes(globalPart)) partialSelect.value = globalPart;
         }
     }
     updatePrintRangeInfo(); 
@@ -564,18 +593,18 @@ function updatePrintRangeInfo() {
         let actualEndId = pool[endIndex].id;
         if (infoBox) {
             infoBox.style.color = "#ffb74d"; 
-            infoBox.innerHTML = `⚠️ Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta el final (<strong>${actualEndId}</strong>).<br><small>Solo hay ${cantReal} preguntas disponibles.</small>`;
+            infoBox.innerHTML = "Se imprimirán desde la N° <strong>" + actualStartId + "</strong> hasta el final (<strong>" + actualEndId + "</strong>).<br><small>Solo hay " + cantReal + " preguntas disponibles.</small>";
         }
     } else {
         let actualEndId = pool[endIndex].id;
         if (infoBox) {
             infoBox.style.color = "#4db6ac"; 
-            infoBox.innerHTML = `📌 Se imprimirán desde la N° <strong>${actualStartId}</strong> hasta la N° <strong>${actualEndId}</strong> (${qty} preguntas).`;
+            infoBox.innerHTML = "Se imprimirán desde la N° <strong>" + actualStartId + "</strong> hasta la N° <strong>" + actualEndId + "</strong> (" + qty + " preguntas).";
         }
     }
 }
 
-function generatePDF() {
+async function generatePDF() {
     const subjectSelect = document.getElementById('print-subject');
     const partialSelect = document.getElementById('print-partial');
     const subject = subjectSelect ? subjectSelect.value : getActiveSubject();
@@ -583,7 +612,10 @@ function generatePDF() {
     
     let pool = getAllQuestions().filter(q => q.subject === subject && (q.partial || "Parcial 1") === partial);
 
-    if(pool.length === 0) return alert("No hay preguntas para imprimir en la materia y parcial seleccionados.");
+    if(pool.length === 0) {
+        await showCustomModal("No hay preguntas para imprimir en la materia y parcial seleccionados.");
+        return;
+    }
     
     let qty = parseInt(document.getElementById('print-cfg-qty').value) || 10;
     let order = document.getElementById('print-cfg-order').value;
@@ -604,7 +636,7 @@ function generatePDF() {
     let html = `
         <div class="print-header">
             <h3>${subject} - ${partial}</h3>
-            <p><strong>Nombre y Apellido:</strong> _________________________________________      <strong>Fecha:</strong> ___/___/___</p>
+            <p><strong>Nombre y Apellido:</strong> _________________________________________      <strong>Fecha:</strong> ___/___/___</p>
         </div>
         <div class="print-columns">
     `;
@@ -630,10 +662,8 @@ function generatePDF() {
     html += `</div>`;
     printSection.innerHTML = html;
 
-    setTimeout(() => {
-        alert("Para guardarlo en tu computadora, al abrirse la ventana de impresión busca la opción 'Destino' o 'Impresora' y selecciona 'Guardar como PDF'.");
-        window.print();
-    }, 300);
+    await showCustomModal("Para guardarlo en tu computadora, al abrirse la ventana de impresión busca la opción 'Destino' o 'Impresora' y selecciona 'Guardar como PDF'.");
+    window.print();
 }
 
 // ==========================================
@@ -679,11 +709,14 @@ function updateLiveCounter() {
 }
 
 function startStudyMode() {
-    if(database.length === 0) return alert("No hay preguntas para la combinación seleccionada.");
+    if(database.length === 0) {
+        showCustomModal("No hay preguntas para la combinación seleccionada.");
+        return;
+    }
     isStudyMode = true;
     instantFeedback = false; 
     currentQuestions = [...database]; 
-    document.getElementById('exam-title').innerText = `Modo Estudio: ${getActiveSubject()} - ${getActivePartial()}`;
+    document.getElementById('exam-title').innerText = "Modo Estudio: " + getActiveSubject() + " - " + getActivePartial();
     
     document.getElementById('btn-finish').style.display = 'none';
     document.getElementById('results-summary').style.display = 'none';
@@ -698,7 +731,10 @@ function startStudyMode() {
 }
 
 function startExam() {
-    if(database.length === 0) return alert("No hay preguntas para la combinación seleccionada.");
+    if(database.length === 0) {
+        showCustomModal("No hay preguntas para la combinación seleccionada.");
+        return;
+    }
     
     isStudyMode = false;
     answeredQuestionsCount = 0; 
@@ -728,16 +764,14 @@ function startExam() {
         currentQuestions = currentQuestions.map(q => shuffleQuestionOptions(q));
     }
 
-    document.getElementById('exam-title').innerText = `Evaluación: ${getActiveSubject()} - ${getActivePartial()}`;
+    document.getElementById('exam-title').innerText = "Evaluación: " + getActiveSubject() + " - " + getActivePartial();
     
-    // Botón finalizar inferior solo si NO es instantáneo
     if (!instantFeedback) {
         document.getElementById('btn-finish').style.display = 'inline-block';
     } else {
         document.getElementById('btn-finish').style.display = 'none';
     }
     
-    // Configuración de visibilidad en el header según la modalidad
     if (instantFeedback) {
         document.getElementById('live-score-counter').style.display = 'block';
         document.getElementById('header-restart-btn').style.display = 'inline-block';
@@ -882,12 +916,14 @@ function calculateGrade(correctas, total) {
     return 1; 
 }
 
-function finishExam(autoFinish = false) {
-    if(!autoFinish && !confirm("¿Estás seguro de que deseas finalizar el examen?")) return;
+async function finishExam(autoFinish = false) {
+    if (!autoFinish) {
+        let confirmar = await showCustomModal("¿Estás seguro de que deseas finalizar el examen?", true);
+        if (!confirmar) return;
+    }
 
     clearInterval(timerInterval);
     
-    // Al finalizar, ocultamos el contador en vivo, y aseguramos que los botones de reiniciar y menú principal estén en el header
     document.getElementById('timer-display').style.display = 'none';
     document.getElementById('live-score-counter').style.display = 'none';
     document.getElementById('header-restart-btn').style.display = 'inline-block';
@@ -941,7 +977,7 @@ function startTimer(seconds) {
         updateTimerDisplay();
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            alert("¡Tiempo agotado! El examen se finalizará automáticamente.");
+            showCustomModal("¡Tiempo agotado! El examen se finalizará automáticamente.");
             finishExam(true); 
         }
     }, 1000);
@@ -951,7 +987,7 @@ function updateTimerDisplay() {
     let m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
     let s = (timeRemaining % 60).toString().padStart(2, '0');
     const display = document.getElementById('timer-display');
-    display.innerText = `Tiempo restante: ${m}:${s}`;
+    display.innerText = "Tiempo restante: " + m + ":" + s;
     display.style.color = timeRemaining < 60 ? '#ff6b6b' : 'white';
 }
 
@@ -983,7 +1019,7 @@ function searchAnswer() {
     if (matches.length === 0 && devMatches.length === 0) {
         resultsContainer.innerHTML = `
             <div style="padding: 15px; border-radius: var(--radius-md); background-color: rgba(239, 68, 68, 0.1); border: 1px dashed var(--incorrect-border); color: #f87171;">
-                ❌ No se encontraron coincidencias.
+                No se encontraron coincidencias.
             </div>`;
         return;
     }
@@ -1001,7 +1037,7 @@ function searchAnswer() {
             let isCorrect = idx === q.correct;
             html += `
                 <div class="option ${isCorrect ? 'correct' : ''}" style="cursor: default; opacity: ${isCorrect ? '1' : '0.3'}; margin-bottom: 5px;">
-                    <span class="${isCorrect ? 'correct-text' : ''}">${isCorrect ? '✅' : '❌'} ${opt}</span>
+                    <span class="${isCorrect ? 'correct-text' : ''}">${isCorrect ? 'Correcto:' : 'Incorrecto:'} ${opt}</span>
                 </div>
             `;
         });
