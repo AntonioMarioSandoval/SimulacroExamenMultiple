@@ -170,7 +170,6 @@ function goHome() {
     document.getElementById('header-home-btn').style.display = 'none';
     document.getElementById('development-questions-container').style.display = 'none';
     
-    // Restaurar botón inferior predeterminado
     document.getElementById('btn-finish').style.display = 'inline-block';
 
     document.getElementById('search-input').value = '';
@@ -690,7 +689,6 @@ function startStudyMode() {
     document.getElementById('results-summary').style.display = 'none';
     document.getElementById('live-score-counter').style.display = 'none';
     
-    // En modo estudio también se pueden mostrar los botones en el header directamente si se desea, o manejarlos:
     document.getElementById('header-restart-btn').style.display = 'none';
     document.getElementById('header-home-btn').style.display = 'inline-block';
 
@@ -732,15 +730,26 @@ function startExam() {
 
     document.getElementById('exam-title').innerText = `Evaluación: ${getActiveSubject()} - ${getActivePartial()}`;
     
-    document.getElementById('btn-finish').style.display = 'inline-block';
-    document.getElementById('header-restart-btn').style.display = 'none';
+    // Botón finalizar inferior solo si NO es instantáneo
+    if (!instantFeedback) {
+        document.getElementById('btn-finish').style.display = 'inline-block';
+    } else {
+        document.getElementById('btn-finish').style.display = 'none';
+    }
+    
+    // Configuración de visibilidad en el header según la modalidad
+    if (instantFeedback) {
+        document.getElementById('live-score-counter').style.display = 'block';
+        document.getElementById('header-restart-btn').style.display = 'inline-block';
+    } else {
+        document.getElementById('live-score-counter').style.display = 'none';
+        document.getElementById('header-restart-btn').style.display = 'none';
+    }
     document.getElementById('header-home-btn').style.display = 'none';
     
     document.getElementById('results-summary').style.display = 'none';
     document.getElementById('development-questions-container').style.display = 'none'; 
     
-    // Mostrar contador en vivo durante el examen
-    document.getElementById('live-score-counter').style.display = 'block';
     updateLiveCounter();
 
     renderQuestions();
@@ -752,11 +761,22 @@ function restartExam() {
     clearInterval(timerInterval);
     answeredQuestionsCount = 0;
     
-    document.getElementById('btn-finish').style.display = 'inline-block';
-    document.getElementById('header-restart-btn').style.display = 'none';
+    if (!instantFeedback) {
+        document.getElementById('btn-finish').style.display = 'inline-block';
+    } else {
+        document.getElementById('btn-finish').style.display = 'none';
+    }
+    
+    if (instantFeedback) {
+        document.getElementById('live-score-counter').style.display = 'block';
+        document.getElementById('header-restart-btn').style.display = 'inline-block';
+    } else {
+        document.getElementById('live-score-counter').style.display = 'none';
+        document.getElementById('header-restart-btn').style.display = 'none';
+    }
     document.getElementById('header-home-btn').style.display = 'none';
+    
     document.getElementById('results-summary').style.display = 'none';
-    document.getElementById('live-score-counter').style.display = 'block';
     
     updateLiveCounter();
     renderQuestions();
@@ -867,7 +887,7 @@ function finishExam(autoFinish = false) {
 
     clearInterval(timerInterval);
     
-    // Ocultar temporizador y contador en vivo en el header, y mostrar los botones de reiniciar y menú principal en el header
+    // Al finalizar, ocultamos el contador en vivo, y aseguramos que los botones de reiniciar y menú principal estén en el header
     document.getElementById('timer-display').style.display = 'none';
     document.getElementById('live-score-counter').style.display = 'none';
     document.getElementById('header-restart-btn').style.display = 'inline-block';
@@ -904,7 +924,6 @@ function finishExam(autoFinish = false) {
         <div style="font-size: 2rem; color: ${colorNota};">Nota: ${nota} (${estado})</div>
     `;
 
-    // Ocultar el botón inferior de finalizar examen
     document.getElementById('btn-finish').style.display = 'none';
 
     window.scrollTo(0, 0); 
