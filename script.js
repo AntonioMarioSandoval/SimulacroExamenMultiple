@@ -141,15 +141,6 @@ function navTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
-    const restartBtn = document.getElementById('header-restart-btn');
-    if(restartBtn) {
-        if(screenId === 'exam-screen' && instantFeedback && !isStudyMode) {
-            restartBtn.style.display = 'block';
-        } else {
-            restartBtn.style.display = 'none';
-        }
-    }
-
     const backBtn = document.getElementById('header-back-btn');
     if (screenId === 'home-screen') {
         backBtn.style.display = 'none';
@@ -174,8 +165,14 @@ function goHome() {
 
     clearInterval(timerInterval);
     document.getElementById('timer-display').style.display = 'none';
+    document.getElementById('live-score-counter').style.display = 'none';
+    document.getElementById('header-restart-btn').style.display = 'none';
+    document.getElementById('header-home-btn').style.display = 'none';
     document.getElementById('development-questions-container').style.display = 'none';
     
+    // Restaurar botón inferior predeterminado
+    document.getElementById('btn-finish').style.display = 'inline-block';
+
     document.getElementById('search-input').value = '';
     document.getElementById('search-results').innerHTML = '';
 
@@ -608,25 +605,21 @@ function generatePDF() {
     let html = `
         <div class="print-header">
             <h3>${subject} - ${partial}</h3>
-            <p><strong>Nombre y Apellido:</strong> _________________________________________      <strong>Fecha:</strong> ___/___/___</p>
+            <p><strong>Nombre y Apellido:</strong> _________________________________________      <strong>Fecha:</strong> ___/___/___</p>
         </div>
         <div class="print-columns">
     `;
 
-    // Array de letras para mapear las opciones (a., b., c., d., etc.)
     const optionLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
     printQuestions.forEach((q, index) => {
         let imgHtml = q.image ? `<img src="${q.image}" class="print-img">` : '';
         html += `<div class="print-question">`;
-        
-        // El rectángulo (print-question-box) ahora encierra únicamente al enunciado e imagen
         html += `<div class="print-question-box">`;
         html += `<p><strong>${index + 1}) ${q.question}</strong></p>`;
         html += imgHtml;
         html += `</div>`;
         
-        // Las opciones quedan fuera del rectángulo de la pregunta
         q.options.forEach((opt, optIdx) => {
             let currentLetter = optionLetters[optIdx] || (optIdx + 1);
             html += `<div class="print-option"><span class="print-opt-letter">${currentLetter})</span> <span class="print-opt-text">${opt}</span></div>`;
@@ -659,14 +652,48 @@ function shuffleQuestionOptions(q) {
     return { ...q, options: newOptions, correct: newCorrect };
 }
 
+function updateLiveCounter() {
+    let total = currentQuestions.length;
+    let correct = 0;
+    let incorrect = 0;
+    let answeredCount = 0;
+
+    currentQuestions.forEach((q, index) => {
+        const selectedRadios = document.querySelectorAll(`input[name="q-${index}"]:checked`);
+        if (selectedRadios.length > 0) {
+            answeredCount++;
+            let selectedVal = parseInt(selectedRadios[0].value);
+            if (selectedVal === q.correct) {
+                correct++;
+            } else {
+                incorrect++;
+            }
+        }
+    });
+
+    let remaining = total - answeredCount;
+
+    document.getElementById('live-total').innerText = total;
+    document.getElementById('live-correct').innerText = correct;
+    document.getElementById('live-incorrect').innerText = incorrect;
+    document.getElementById('live-remaining').innerText = remaining;
+}
+
 function startStudyMode() {
     if(database.length === 0) return alert("No hay preguntas para la combinación seleccionada.");
     isStudyMode = true;
     instantFeedback = false; 
     currentQuestions = [...database]; 
     document.getElementById('exam-title').innerText = `Modo Estudio: ${getActiveSubject()} - ${getActivePartial()}`;
+    
     document.getElementById('btn-finish').style.display = 'none';
     document.getElementById('results-summary').style.display = 'none';
+    document.getElementById('live-score-counter').style.display = 'none';
+    
+    // En modo estudio también se pueden mostrar los botones en el header directamente si se desea, o manejarlos:
+    document.getElementById('header-restart-btn').style.display = 'none';
+    document.getElementById('header-home-btn').style.display = 'inline-block';
+
     renderQuestions();
     renderDevelopmentQuestions(); 
     navTo('exam-screen');
@@ -705,11 +732,17 @@ function startExam() {
 
     document.getElementById('exam-title').innerText = `Evaluación: ${getActiveSubject()} - ${getActivePartial()}`;
     
-    document.getElementById('btn-finish').style.display = instantFeedback ? 'none' : 'inline-block';
+    document.getElementById('btn-finish').style.display = 'inline-block';
+    document.getElementById('header-restart-btn').style.display = 'none';
+    document.getElementById('header-home-btn').style.display = 'none';
     
     document.getElementById('results-summary').style.display = 'none';
     document.getElementById('development-questions-container').style.display = 'none'; 
     
+    // Mostrar contador en vivo durante el examen
+    document.getElementById('live-score-counter').style.display = 'block';
+    updateLiveCounter();
+
     renderQuestions();
     startTimer(timeMinutes * 60);
     navTo('exam-screen');
@@ -719,9 +752,13 @@ function restartExam() {
     clearInterval(timerInterval);
     answeredQuestionsCount = 0;
     
-    document.getElementById('btn-finish').style.display = instantFeedback ? 'none' : 'inline-block';
+    document.getElementById('btn-finish').style.display = 'inline-block';
+    document.getElementById('header-restart-btn').style.display = 'none';
+    document.getElementById('header-home-btn').style.display = 'none';
     document.getElementById('results-summary').style.display = 'none';
+    document.getElementById('live-score-counter').style.display = 'block';
     
+    updateLiveCounter();
     renderQuestions();
     
     let timeMinutes = parseInt(document.getElementById('cfg-time').value) || 30;
@@ -731,6 +768,8 @@ function restartExam() {
 }
 
 function handleQuestionAnswer(qIndex) {
+    updateLiveCounter();
+
     if (!instantFeedback || isStudyMode) return;
 
     const q = currentQuestions[qIndex];
@@ -827,8 +866,12 @@ function finishExam(autoFinish = false) {
     if(!autoFinish && !confirm("¿Estás seguro de que deseas finalizar el examen?")) return;
 
     clearInterval(timerInterval);
+    
+    // Ocultar temporizador y contador en vivo en el header, y mostrar los botones de reiniciar y menú principal en el header
     document.getElementById('timer-display').style.display = 'none';
-    if(document.getElementById('header-restart-btn')) document.getElementById('header-restart-btn').style.display = 'none';
+    document.getElementById('live-score-counter').style.display = 'none';
+    document.getElementById('header-restart-btn').style.display = 'inline-block';
+    document.getElementById('header-home-btn').style.display = 'inline-block';
     
     let score = 0;
 
@@ -861,7 +904,9 @@ function finishExam(autoFinish = false) {
         <div style="font-size: 2rem; color: ${colorNota};">Nota: ${nota} (${estado})</div>
     `;
 
+    // Ocultar el botón inferior de finalizar examen
     document.getElementById('btn-finish').style.display = 'none';
+
     window.scrollTo(0, 0); 
 }
 

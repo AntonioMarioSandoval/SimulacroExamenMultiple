@@ -14,10 +14,23 @@
             </button>
             <h1>UNLaM | Simulación de Evaluación</h1>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- Contador de respuestas, aciertos, errores y pendientes -->
+            <div id="live-score-counter" style="display: none; font-size: 0.95rem; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <span>Total: <strong id="live-total">0</strong></span> | 
+                <span style="color: #34d399;" title="Acertadas">✅ <strong id="live-correct">0</strong></span> | 
+                <span style="color: #f87171;" title="Equivocadas">❌ <strong id="live-incorrect">0</strong></span> | 
+                <span style="color: #fbbf24;" title="Restantes">⏳ <strong id="live-remaining">0</strong></span>
+            </div>
+            
+            <!-- Botones en el header cuando el examen finaliza -->
             <button id="header-restart-btn" class="btn-secondary" onclick="restartExam()" style="display: none; padding: 4px 10px; font-size: 0.9rem; border-radius: var(--radius-md);">
-                Reiniciar
+                🔄 Reiniciar
             </button>
+            <button id="header-home-btn" class="btn-secondary" onclick="goHome()" style="display: none; padding: 4px 10px; font-size: 0.9rem; border-radius: var(--radius-md); border-color: #f87171; color: #f87171;">
+                🏠 Menú Principal
+            </button>
+
             <div id="timer-display" style="display: none;">00:00</div>
         </div>
     </header>
