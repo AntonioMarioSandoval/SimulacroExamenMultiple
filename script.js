@@ -619,6 +619,7 @@ async function generatePDF() {
     
     let qty = parseInt(document.getElementById('print-cfg-qty').value) || 10;
     let order = document.getElementById('print-cfg-order').value;
+    let optionsOrder = document.getElementById('print-options-order').value;
 
     let printQuestions = [];
     if (order === 'orden') {
@@ -629,6 +630,10 @@ async function generatePDF() {
     } else {
         pool = pool.sort(() => Math.random() - 0.5);
         printQuestions = pool.slice(0, qty);
+    }
+
+    if (optionsOrder === 'aleatorio') {
+        printQuestions = printQuestions.map(q => shuffleQuestionOptions(q));
     }
 
     const printSection = document.getElementById('print-section');
