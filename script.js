@@ -124,7 +124,8 @@ function updatePartialDropdown() {
         availablePartials.sort().forEach(p => {
             partialSelect.innerHTML += `<option value="${p}">${p}</option>`;
         });
-        if (availablePartials.includes(currentPartial)) {
+        partialSelect.innerHTML += `<option value="FINAL">FINAL</option>`;
+        if (availablePartials.includes(currentPartial) || currentPartial === "FINAL") {
             partialSelect.value = currentPartial;
         }
     }
@@ -146,8 +147,13 @@ function updateActiveSubject() {
     const activeSubject = getActiveSubject();
     const activePartial = getActivePartial();
 
-    database = getAllQuestions().filter(q => q.subject === activeSubject && q.partial === activePartial);
-    developmentData = jsonDevData.filter(q => q.subject === activeSubject && q.partial === activePartial);
+    if (activePartial === "FINAL") {
+        database = getAllQuestions().filter(q => q.subject === activeSubject && ((q.partial || "Parcial 1") === "Parcial 1" || (q.partial || "Parcial 1") === "Parcial 2"));
+        developmentData = jsonDevData.filter(q => q.subject === activeSubject && ((q.partial || "Parcial 1") === "Parcial 1" || (q.partial || "Parcial 1") === "Parcial 2"));
+    } else {
+        database = getAllQuestions().filter(q => q.subject === activeSubject && q.partial === activePartial);
+        developmentData = jsonDevData.filter(q => q.subject === activeSubject && q.partial === activePartial);
+    }
     
     const maxQElem = document.getElementById('max-q');
     const qtyElem = document.getElementById('cfg-qty');
@@ -535,7 +541,8 @@ function updatePrintPartialDropdown() {
         availablePartials.sort().forEach(p => {
             partialSelect.innerHTML += `<option value="${p}">${p}</option>`;
         });
-        if (availablePartials.includes(currentPartial)) {
+        partialSelect.innerHTML += `<option value="FINAL">FINAL</option>`;
+        if (availablePartials.includes(currentPartial) || currentPartial === "FINAL") {
             partialSelect.value = currentPartial;
         }
     }
@@ -555,7 +562,11 @@ function updatePrintRangeInfo() {
     
     let pool = [];
     if (subjectSelect && partialSelect) {
-        pool = getAllQuestions().filter(q => q.subject === subjectSelect.value && (q.partial || "Parcial 1") === partialSelect.value);
+        if (partialSelect.value === "FINAL") {
+            pool = getAllQuestions().filter(q => q.subject === subjectSelect.value && ((q.partial || "Parcial 1") === "Parcial 1" || (q.partial || "Parcial 1") === "Parcial 2"));
+        } else {
+            pool = getAllQuestions().filter(q => q.subject === subjectSelect.value && (q.partial || "Parcial 1") === partialSelect.value);
+        }
     } else {
         pool = database;
     }
@@ -610,7 +621,9 @@ async function generatePDF() {
     const subject = subjectSelect ? subjectSelect.value : getActiveSubject();
     const partial = partialSelect ? partialSelect.value : getActivePartial();
     
-    let pool = getAllQuestions().filter(q => q.subject === subject && (q.partial || "Parcial 1") === partial);
+    let pool = partial === "FINAL"
+        ? getAllQuestions().filter(q => q.subject === subject && ((q.partial || "Parcial 1") === "Parcial 1" || (q.partial || "Parcial 1") === "Parcial 2"))
+        : getAllQuestions().filter(q => q.subject === subject && (q.partial || "Parcial 1") === partial);
 
     if(pool.length === 0) {
         await showCustomModal("No hay preguntas para imprimir en la materia y parcial seleccionados.");
