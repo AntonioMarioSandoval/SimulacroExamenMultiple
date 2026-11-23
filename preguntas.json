@@ -1469,19 +1469,6 @@
             "id": 42,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
-            "question": "Indique a qué término se asocia la siguiente definición: \"[...] es la propiedad que busca mantener los datos libres de modificaciones no autorizadas.\"",
-            "options": [
-                "Confidencialidad",
-                "Integridad",
-                "Consistencia",
-                "Disponibilidad"
-            ],
-            "correct": 1
-        },
-        {
-            "id": 43,
-            "subject": "Seguridad y Calidad",
-            "partial": "Parcial 1",
             "question": "¿Cuál es el conjunto de estándares que permite asignar a las vulnerabilidades una valoración numérica entre 0.0 y 10.0?",
             "options": [
                 "CVE",
@@ -1492,7 +1479,7 @@
             "correct": 2
         },
         {
-            "id": 44,
+            "id": 43,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Qué tipo de ataque implica capturar la sesión activa de un usuario para acceder sin permiso?",
@@ -1505,7 +1492,7 @@
             "correct": 2
         },
         {
-            "id": 45,
+            "id": 44,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de los siguientes ataques modifica configuraciones del navegador para redirigir a sitios maliciosos?",
@@ -1518,7 +1505,7 @@
             "correct": 3
         },
         {
-            "id": 46,
+            "id": 45,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Qué hace un rootkit?",
@@ -1531,7 +1518,7 @@
             "correct": 2
         },
         {
-            "id": 47,
+            "id": 46,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Qué característica principal tiene un backdoor?",
@@ -1544,7 +1531,7 @@
             "correct": 3
         },
         {
-            "id": 48,
+            "id": 47,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de estos malware se usa para registrar pulsaciones del teclado?",
@@ -1557,7 +1544,7 @@
             "correct": 2
         },
         {
-            "id": 49,
+            "id": 48,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Qué tipo de amenaza cifra los archivos de la víctima y exige un pago para liberarlos?",
@@ -1570,7 +1557,7 @@
             "correct": 2
         },
         {
-            "id": 50,
+            "id": 49,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Qué hace un stealer?",
@@ -1583,7 +1570,7 @@
             "correct": 2
         },
         {
-            "id": 51,
+            "id": 50,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de estos ataques se clasifica como “hijacking”?",
@@ -1596,7 +1583,7 @@
             "correct": 3
         },
         {
-            "id": 52,
+            "id": 51,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál es el objetivo del ataque de Backdoors?",
@@ -1609,7 +1596,7 @@
             "correct": 2
         },
         {
-            "id": 53,
+            "id": 52,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿A qué término está asociada la siguiente definición: “Cuando se recibe un mensaje no solo es necesario poder identificar de forma unívoca al remitente, sino que este asuma todas las responsabilidades derivadas de la información que haya podido enviar”?",
@@ -1622,7 +1609,7 @@
             "correct": 0
         },
         {
-            "id": 54,
+            "id": 53,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "La seguridad de la información se encarga de:",
@@ -1635,7 +1622,7 @@
             "correct": 3
         },
         {
-            "id": 55,
+            "id": 54,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "Indique a qué corresponde la siguiente definición: \"se define como una función o método para generar un valor que represente de manera casi unívoca a un dato\"",
@@ -1648,7 +1635,7 @@
             "correct": 0
         },
         {
-            "id": 56,
+            "id": 55,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Para qué tipo de ataque se podría utilizar la siguiente instrucción?: “document.body.innnerHTML(“atacado(*)”);”",
@@ -1661,7 +1648,7 @@
             "correct": 0
         },
         {
-            "id": 57,
+            "id": 56,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "La seguridad informática se encarga de:",
@@ -1674,7 +1661,7 @@
             "correct": 1
         },
         {
-            "id": 58,
+            "id": 57,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "Dada la siguiente definición en el código de la aplicación: String query = “ SELECT * FROM ítems WHERE itemname = ‘ “ + itemName + “ ´ ”; Indique cuál de las opciones puede generar un ataque de inyección exitoso:",
@@ -1686,7 +1673,7 @@
             "correct": 2
         },
         {
-            "id": 59,
+            "id": 58,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de los siguientes elementos no corresponde a la lista de CWE?",
@@ -1699,7 +1686,7 @@
             "correct": 0
         },
         {
-            "id": 60,
+            "id": 59,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de los siguientes puntos corresponde a la seguridad física en dispositivos móviles?",
@@ -1712,7 +1699,7 @@
             "correct": 1
         },
         {
-            "id": 61,
+            "id": 60,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Cuál de las siguientes opciones NO es una buena práctica para evitar vulnerabilidades de XSS?",
@@ -1725,7 +1712,7 @@
             "correct": 1
         },
         {
-            "id": 62,
+            "id": 61,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "Al hablar de daño...",
@@ -1738,7 +1725,7 @@
             "correct": 1
         },
         {
-            "id": 63,
+            "id": 62,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "Indique el tipo de ataque correspondiente a la siguiente definición: “[…] obliga al navegador de una víctima autenticada a enviar una petición HTTP falsificada incluyendo la sesión del usuario y cualquier otra información de modificaciones incluida automáticamente a una aplicación web vulnerable”",
@@ -1751,7 +1738,7 @@
             "correct": 1
         },
         {
-            "id": 64,
+            "id": 63,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿Para qué tipo de ataque se podría utilizar la siguiente instrucción?: “document.body.innnerHTML(“atacado(*)”);”",
@@ -1764,7 +1751,7 @@
             "correct": 1
         },
         {
-            "id": 65,
+            "id": 64,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "¿A qué elemento corresponde la definición \"Es una lista de tipos de debilidades de software y hardware\"?",
@@ -1777,7 +1764,7 @@
             "correct": 0
         },
         {
-            "id": 66,
+            "id": 65,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
             "question": "La seguridad de la información se encarga de:",
