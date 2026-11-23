@@ -1671,7 +1671,7 @@
                 "Desarrollar políticas y procedimientos de seguridad de la información",
                 "Asegurar la confidencialidad, integridad, disponibilidad de la información"
             ],
-            "correct": 2
+            "correct": 1
         },
         {
             "id": 58,
@@ -1735,7 +1735,7 @@
                 "Tenemos que calcular la probabilidad que ocurra",
                 "No hace falta cuantificar el perjuicio"
             ],
-            "correct": 2
+            "correct": 1
         },
         {
             "id": 63,
@@ -1767,18 +1767,6 @@
             "id": 65,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
-            "question": "¿Cuál es la principal función de un comprobador de integridad?",
-            "options": [
-                "Identificar archivos que han sido alterados en el sistema de archivos",
-                "Notificar vía email sobre cambios en el sistema de archivos",
-                "Identificar los cambios realizados en los archivos del sistema"
-            ],
-            "correct": 2
-        },
-        {
-            "id": 66,
-            "subject": "Seguridad y Calidad",
-            "partial": "Parcial 1",
             "question": "¿A qué elemento corresponde la definición \"Es una lista de tipos de debilidades de software y hardware\"?",
             "options": [
                 "CWE",
@@ -1787,6 +1775,19 @@
                 "NVD"
             ],
             "correct": 0
+        },
+        {
+            "id": 66,
+            "subject": "Seguridad y Calidad",
+            "partial": "Parcial 1",
+            "question": "La seguridad de la información se encarga de:",
+            "options": [
+                "Analizar los riesgos y amenazas a la información",
+                "Implementar tecnologías de protección de la información, como antivirus, firewalls, etc.",
+                "Desarrollar políticas y procedimientos de seguridad de la información",
+                "Asegurar la confidencialidad, integridad, disponibilidad de la información"
+            ],
+            "correct": 2
         },
         {
             "id": 1,
