@@ -985,19 +985,6 @@
             "correct": 3
         },
         {
-            "id": 5,
-            "subject": "Seguridad y Calidad",
-            "partial": "Parcial 1",
-            "question": "¿Cuál de los siguientes puntos no es un atributo del protocolo TCP?",
-            "options": [
-                "No es orientado a conexión.",
-                "Corre sobre IP",
-                "Cada paquete tiene un número de secuencia y un flag",
-                "Un paquete tiene un número de puerto origen y destino"
-            ],
-            "correct": 0
-        },
-        {
             "id": 6,
             "subject": "Seguridad y Calidad",
             "partial": "Parcial 1",
